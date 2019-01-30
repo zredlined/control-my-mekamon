@@ -7,7 +7,7 @@ Configuration settings for Mekamon control
 """
 
 __author__      = "Alex Watson"
-__copyright__   = "Copyright 2018"
+__copyright__   = "Copyright 2019"
 
 import numpy as np
 
@@ -19,3 +19,6 @@ pwn_mekamon_list= np.array([init_cmd_1, init_cmd_2, stop_motion_cmd])
 
 # text messages
 default_cmd_desc = "Executing command"
+
+# BLE settings
+message_delay = 0.5 # Time to sleep after sending message

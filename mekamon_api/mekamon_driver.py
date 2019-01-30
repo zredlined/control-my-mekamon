@@ -92,7 +92,7 @@ def main():
      
             limit = 80 # max +/- 127
      
-            time.sleep(0.2) 
+            time.sleep(config.message_delay) 
      
             strafe = 0
             fwd = 0
@@ -103,10 +103,9 @@ def main():
             msgOut = generate_cmd([6, strafe, fwd, turn]) # 6=motion
             logging.info('strafe: %d fwd: %d turn: %d [%s]' % (strafe, fwd, turn, msgOut))
      
-            #msgOut = str.encode(msgOut)
             msgOut = unhexlify(msgOut)
             mekamon_uart.write(msgOut)
-            time.sleep(1)
+            time.sleep(config.message_delay)
 
         msgOut = generate_cmd([6, 0, 0, 0]) # 6=motion
         logging.info('Stopping all motion [%s]' % (msgOut))

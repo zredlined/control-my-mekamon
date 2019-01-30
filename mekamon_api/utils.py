@@ -39,7 +39,7 @@ def execute_cmd(cmd, mekamon_uart, desc=config.default_cmd_desc):
     msgOut = unhexlify(msgOut)
     logging.debug("  -- %s: [%s]" % (desc, msgOut))
     mekamon_uart.write(msgOut)
-    time.sleep(0.5) 
+    time.sleep(config.message_delay) 
 
 def unhexlify(hexstr):
     """
@@ -75,7 +75,11 @@ def generate_cmd(int_sequence):
     Generate_cmd produces hex for Mekamon command from signed int inputs
     using the consistent overhead byte stuffing method (COBS)
 
-    Args: data (byte string)
+    Examples: 
+        generate_cmd([6, strafe, fwd, turn]) # 6=motion
+        generate_cmd([6,0,0,0]) # 02060101010c00
+
+    Args: list of integers
     Returns: string of hexadecimal representation of binary data (str)
     """
 
