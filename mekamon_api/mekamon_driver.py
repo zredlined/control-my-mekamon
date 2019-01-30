@@ -8,7 +8,7 @@ https://mekamon.com
 """
 
 __author__      = "Alex Watson"
-__copyright__   = "Copyright 2018"
+__copyright__   = "Copyright 2019"
  
 import logging
 import numpy as np
@@ -81,17 +81,7 @@ def main():
     mekamon_uart = UART(mekamon_device)
  
     # list of initial MM messages.
-    execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="Pwning Mekamon")
-
-    for index, msg in enumerate(config.pwn_mekamon_list):
-        msgOut = generate_cmd(msg)
-        logging.info("  -- Pwning Mekamon message %d/%d: %s", index, len(config.pwn_mekamon_list), msgOut)   
- 
-        #msgOut = str.encode(msgOut) # convert to bytes
-        msgOut = unhexlify(msgOut)
-        mekamon_uart.write(msgOut)
- 
-        time.sleep(0.5)
+    execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="  -- Pwning Mekamon")
 
     # Setup complete. main program loop here
     x = 0
