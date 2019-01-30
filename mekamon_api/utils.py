@@ -25,8 +25,8 @@ def execute_cmds(cmd_array, mekamon_uart, desc=config.default_cmd_desc):
     Returns: None
     """
     for index, cmd in enumerate(cmd_array):
-        desc = "%s message [%d/%d]" % (desc, index, len(cmd_array))
-        execute_cmd(cmd, mekamon_uart, desc=desc)
+        cmd_desc = "%s message [%d/%d]" % (desc, index, len(cmd_array))
+        execute_cmd(cmd, mekamon_uart, desc=cmd_desc)
 
 def execute_cmd(cmd, mekamon_uart, desc=config.default_cmd_desc): 
     """
@@ -36,8 +36,8 @@ def execute_cmd(cmd, mekamon_uart, desc=config.default_cmd_desc):
     Returns: None
     """
     msgOut = generate_cmd(cmd)
+    logging.info("  -- %s: [%s]" % (desc, msgOut))
     msgOut = unhexlify(msgOut)
-    logging.debug("  -- %s: [%s]" % (desc, msgOut))
     mekamon_uart.write(msgOut)
     time.sleep(config.message_delay) 
 
