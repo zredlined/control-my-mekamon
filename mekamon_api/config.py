@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+config.py
+Configuration settings for Mekamon control
+"""
+
+__author__      = "Alex Watson"
+__copyright__   = "Copyright 2018"
+
+import numpy as np
+
+# Replay these messages to take control of the Mekamon
+init_cmd_1 = [16] # 02101300
+init_cmd_2 = [7,1] # 0307010c00
+stop_motion_cmd = [6,0,0,0] # 02060101010c00
+pwn_mekamon_list= np.array([init_cmd_1, init_cmd_2, stop_motion_cmd])
+
+# text messages
+default_cmd_desc = "Executing command"

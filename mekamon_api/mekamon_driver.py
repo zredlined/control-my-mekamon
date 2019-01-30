@@ -18,7 +18,8 @@ import time
 import Adafruit_BluefruitLE
 from Adafruit_BluefruitLE.services import UART, DeviceInformation
 
-from utils import generate_cmd, unhexlify
+import config
+from utils import generate_cmd, unhexlify, execute_cmds, execute_cmd
 
 def main():
 
@@ -80,15 +81,11 @@ def main():
     mekamon_uart = UART(mekamon_device)
  
     # list of initial MM messages.
-    init1 = [16] # 02101300
-    init2 = [7,1] # 0307010c00
-    motion_neutral = [6,0,0,0] # 02060101010c00
- 
-    msgList = np.array([init1, init2, motion_neutral])
- 
-    for index, msg in enumerate(msgList):
+    execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="Pwning Mekamon")
+
+    for index, msg in enumerate(config.pwn_mekamon_list):
         msgOut = generate_cmd(msg)
-        logging.info("  -- Pwning Mekamon message %d/%d: %s", index, len(msgList), msgOut)   
+        logging.info("  -- Pwning Mekamon message %d/%d: %s", index, len(config.pwn_mekamon_list), msgOut)   
  
         #msgOut = str.encode(msgOut) # convert to bytes
         msgOut = unhexlify(msgOut)
