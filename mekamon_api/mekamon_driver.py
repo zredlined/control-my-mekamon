@@ -12,6 +12,7 @@ __copyright__   = "Copyright 2019"
  
 import logging
 import numpy as np
+import socket
 import sys
 import time
 
@@ -19,16 +20,24 @@ import Adafruit_BluefruitLE
 from Adafruit_BluefruitLE.services import UART, DeviceInformation
 
 import config
-from utils import generate_cmd, unhexlify, execute_cmds, execute_cmd
+from motion_controller import MotionController
+from utils import execute_cmds, execute_cmd
 
 def main():
 
     # Set up logging
-    logging_format = '%(asctime)s : %(processName)s : %(levelname)s : %(message)s'
+    logging_format = '%(asctime)s : %(filename)s : %(levelname)s : %(message)s'
     logging_level = logging.INFO
     logging.basicConfig(format=logging_format, level=logging_level)
-    logging.info("running %s", " ".join(sys.argv))
- 
+    logging.info("Running %s", " ".join(sys.argv))
+
+    # Declare our serverSocket upon which
+    # we will be listening for UDP messages
+    logging.info('Initializing Mekamon UDP listener on %s:%s' % (config.UDP_IP_ADDRESS,
+        config.UDP_PORT_NO))
+    serverSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    serverSock.bind((config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
+
     # Clear any cached data because both bluez and CoreBluetooth have issues with
     # caching data and it going stale.
     ble.clear_cached_data()
@@ -80,37 +89,25 @@ def main():
     # and start interacting with it.
     mekamon_uart = UART(mekamon_device)
  
-    # list of initial MM messages.
-    execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="  -- Pwning Mekamon")
-
-    # Setup complete. main program loop here
-    x = 0
+    # Set up motion controller and initialize Mekamon
+    motion_controller = MotionController(mekamon_uart)
+    motion_controller.pwn_mekamon()
+ 
+    # Setup complete. Start command and control server
     try: 
-        logging.info("Sending motion commands")
-        while x < 2:
-            # convert velocities to MM values ([-80...80])
-     
-            limit = 80 # max +/- 127
-     
-            time.sleep(config.message_delay) 
-     
-            strafe = 0
-            fwd = 0
-            turn = 10
+        logging.info("Starting UDP server on Port 5000")
+        is_running = True 
 
-            x = x+1
+        while is_running:
+            data, addr = serverSock.recvfrom(1024)
+            logging.info("Received client message: %s" % (data))
 
-            msgOut = generate_cmd([6, strafe, fwd, turn]) # 6=motion
-            logging.info('strafe: %d fwd: %d turn: %d [%s]' % (strafe, fwd, turn, msgOut))
-     
-            msgOut = unhexlify(msgOut)
-            mekamon_uart.write(msgOut)
-            time.sleep(config.message_delay)
-
-        msgOut = generate_cmd([6, 0, 0, 0]) # 6=motion
-        logging.info('Stopping all motion [%s]' % (msgOut))
-        msgOut = unhexlify(msgOut)
-        mekamon_uart.write(msgOut)
+            if 'exit' in data.lower():
+                logging.info("Exiting...")
+                is_running = False
+            else:
+                motion_controller.turn_mekamon()
+                motion_controller.stop_mekamon()
 
     finally:
         logging.info("Disconnecting BLE from Mekamon")
@@ -122,9 +119,13 @@ ble = Adafruit_BluefruitLE.get_provider()
  
 # Initialize the BLE system.  MUST be called before other BLE calls!
 ble.initialize()
+
+# Initialize global mekamon device
+# Use this to safely disconnect device with KeyboardInterrupt
+mekamon_device = None
  
 # Start the mainloop to process BLE events, and run the provided function in
 # a background thread.  When the provided main function stops running, returns
 # an integer status code, or throws an error the program will exit.
 ble.run_mainloop_with(main)
- 
+
