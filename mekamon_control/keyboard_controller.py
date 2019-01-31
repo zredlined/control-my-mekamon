@@ -9,9 +9,13 @@ __author__      = "Alex Watson"
 __copyright__   = "Copyright 2018"
 
 import logging
+import socket
 import sys
 
 import pygame
+
+import config
+from config import Motion
 
 pygame.init()
 screen = pygame.display.set_mode((720, 480))
@@ -24,9 +28,10 @@ class Mekamon(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 32))
         self.image.fill((255, 255, 255))
         self.velocity = [0, 0]  # It's current velocity.
-        self.speed = 4  # The speed the mekamon will move.
+        self.speed = 80  # The speed the mekamon will move.
         self.dx = []  # Keeps track of the horizontal movement.
         self.dy = []  # Keeps track of the vertical movement.
+        self.turn = []  # Keeps track of the vertical movement.
 
     def update(self):
         try:
@@ -38,6 +43,7 @@ class Mekamon(pygame.sprite.Sprite):
         except IndexError:
             self.rect.y += 0
 
+
 def main():
 
     # Set up logging
@@ -47,6 +53,8 @@ def main():
     logging.info("Running %s", " ".join(sys.argv))
 
     mekamon = Mekamon()
+    is_mekamon_moving = True
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -75,9 +83,23 @@ def main():
         screen.blit(mekamon.image, mekamon.rect)
         pygame.display.update()
 
-        if mekamon.dx != [] or mekamon.dy != []:
-            logging.info("strafe:%s fwd:%s turn:%s" % (mekamon.dx, mekamon.dy, 0)) 
+        # Build mekamon command
+        strafe = 0 if len(mekamon.dx) == 0 else mekamon.dx[0]
+        fwd = 0 if len(mekamon.dy) == 0 else mekamon.dy[0]
+        turn = 0 if len(mekamon.turn) == 0 else mekamon.turn[0]
+        cmd = "[%s,%s,%s,%s]" % (6, strafe, fwd, turn)
 
+        if strafe == 0 and turn == 0 and fwd == 0 and is_mekamon_moving == True:
+            clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
+            logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
+            is_mekamon_moving = False
+        elif not (strafe == 0 and turn == 0 and fwd == 0):
+            # Send data to server
+            clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
+            logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
+            is_mekamon_moving = True
 if __name__ == '__main__':
     main()
 
