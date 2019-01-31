@@ -26,22 +26,18 @@ from utils import execute_cmds, execute_cmd
 def main():
 
     # Set up logging
-    logging_format = '%(asctime)s : %(processName)s : %(levelname)s : %(message)s'
+    logging_format = '%(asctime)s : %(filename)s : %(levelname)s : %(message)s'
     logging_level = logging.INFO
     logging.basicConfig(format=logging_format, level=logging_level)
     logging.info("Running %s", " ".join(sys.argv))
 
     # Declare our serverSocket upon which
     # we will be listening for UDP messages
-    logging.info('Initializing Mekamon UDP C2 on %s:%s' % (config.UDP_IP_ADDRESS,
+    logging.info('Initializing Mekamon UDP listener on %s:%s' % (config.UDP_IP_ADDRESS,
         config.UDP_PORT_NO))
-
     serverSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    # One difference is that we will have to bind our declared IP address
-    # and port number to our newly declared serverSock
     serverSock.bind((config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
 
- 
     # Clear any cached data because both bluez and CoreBluetooth have issues with
     # caching data and it going stale.
     ble.clear_cached_data()
@@ -93,7 +89,6 @@ def main():
     # and start interacting with it.
     mekamon_uart = UART(mekamon_device)
  
-
     # Set up motion controller and initialize Mekamon
     motion_controller = MotionController(mekamon_uart)
     motion_controller.pwn_mekamon()

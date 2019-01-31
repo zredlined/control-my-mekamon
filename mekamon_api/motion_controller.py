@@ -32,7 +32,7 @@ class MotionController(object):
 
     def pwn_mekamon(self):
         # list of initial MM messages.
-        execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="Pwning Mekamon")
+        execute_cmds(config.pwn_mekamon_list, self.mekamon_uart, desc="Pwning Mekamon")
 
     def stop_mekamon(self):
         cmd = [6, 0, 0, 0] # 6=motion
