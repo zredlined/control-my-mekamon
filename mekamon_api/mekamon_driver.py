@@ -12,7 +12,6 @@ __copyright__   = "Copyright 2019"
  
 import logging
 import numpy as np
-import signal
 import socket
 import sys
 import time
@@ -21,13 +20,8 @@ import Adafruit_BluefruitLE
 from Adafruit_BluefruitLE.services import UART, DeviceInformation
 
 import config
-from utils import generate_cmd, unhexlify, execute_cmds, execute_cmd
-
-def signal_handler(sig, frame):
-    logging.warn('Disconnecting from Mekamon')
-    if mekamon_device is not None:
-        mekamon_device.disconnect()
-    sys.exit(0)
+from motion_controller import MotionController
+from utils import execute_cmds, execute_cmd
 
 def main():
 
@@ -36,7 +30,6 @@ def main():
     logging_level = logging.INFO
     logging.basicConfig(format=logging_format, level=logging_level)
     logging.info("Running %s", " ".join(sys.argv))
-
 
     # Declare our serverSocket upon which
     # we will be listening for UDP messages
@@ -100,26 +93,31 @@ def main():
     # and start interacting with it.
     mekamon_uart = UART(mekamon_device)
  
-    # list of initial MM messages.
-    execute_cmds(config.pwn_mekamon_list, mekamon_uart, desc="Pwning Mekamon")
 
-    # Setup complete. main program loop here
+    # Set up motion controller and initialize Mekamon
+    motion_controller = MotionController(mekamon_uart)
+    motion_controller.pwn_mekamon()
+ 
+    # Setup complete. Start command and control server
     try: 
         logging.info("Starting UDP server on Port 5000")
-        while True:
+        is_running = True 
+
+        while is_running:
             data, addr = serverSock.recvfrom(1024)
             logging.info("Received client message: %s" % (data))
 
-            msgOut = generate_cmd([6, 0, 0, 0]) # 6=motion
-            logging.info('Stopping all motion [%s]' % (msgOut))
-            msgOut = unhexlify(msgOut)
-            mekamon_uart.write(msgOut)
+            if 'exit' in data.lower():
+                logging.info("Exiting...")
+                is_running = False
+            else:
+                motion_controller.turn_mekamon()
+                motion_controller.stop_mekamon()
+
     finally:
         logging.info("Disconnecting BLE from Mekamon")
         mekamon_device.disconnect()
 
-# Initialize signal handler to catch keyboard interrupts
-signal.signal(signal.SIGINT, signal_handler)
  
 # Get the BLE provider for the current platform.
 ble = Adafruit_BluefruitLE.get_provider()
@@ -135,5 +133,4 @@ mekamon_device = None
 # a background thread.  When the provided main function stops running, returns
 # an integer status code, or throws an error the program will exit.
 ble.run_mainloop_with(main)
-
 
