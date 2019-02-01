@@ -12,7 +12,7 @@ __copyright__   = "Copyright 2019"
 from collections import namedtuple
 
 # Motion commands
-Motion = namedtuple('Motion','cmd strafe fwd turn')
+mekamon_speed = 40 # converted to signed byte, +/- 128 max
 
 # BLE settings
 message_delay = 0.5 # Time to sleep after sending message

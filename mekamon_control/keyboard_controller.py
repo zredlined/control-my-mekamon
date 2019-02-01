@@ -11,6 +11,7 @@ __copyright__   = "Copyright 2018"
 import logging
 import socket
 import sys
+import time
 
 import pygame
 
@@ -28,7 +29,7 @@ class Mekamon(pygame.sprite.Sprite):
         self.image = pygame.Surface((32, 32))
         self.image.fill((255, 255, 255))
         self.velocity = [0, 0]  # It's current velocity.
-        self.speed = 80  # The speed the mekamon will move.
+        self.speed = config.mekamon_speed  # The speed the mekamon will move.
         self.dx = []  # Keeps track of the horizontal movement.
         self.dy = []  # Keeps track of the vertical movement.
         self.turn = []  # Keeps track of the vertical movement.
@@ -87,7 +88,7 @@ def main():
         strafe = 0 if len(mekamon.dx) == 0 else mekamon.dx[0]
         fwd = 0 if len(mekamon.dy) == 0 else mekamon.dy[0]
         turn = 0 if len(mekamon.turn) == 0 else mekamon.turn[0]
-        cmd = "[%s,%s,%s,%s]" % (6, strafe, fwd, turn)
+        cmd = "motion,%s,%s,%s,%s" % (6, strafe, fwd, turn)
 
         if strafe == 0 and turn == 0 and fwd == 0 and is_mekamon_moving == True:
             clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -100,6 +101,10 @@ def main():
             clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
             logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
             is_mekamon_moving = True
+
+        # Message delay to avoid flooding Mekamon with requests
+        time.sleep(config.message_delay)
+
 if __name__ == '__main__':
     main()
 
