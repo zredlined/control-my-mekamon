@@ -105,9 +105,11 @@ def main():
             if 'exit' in data.lower():
                 logging.info("Exiting...")
                 is_running = False
+            elif 'motion' in data.lower():
+                motion_controller.xyz_motion(data)
             else:
-                motion_controller.turn_mekamon()
-                motion_controller.stop_mekamon()
+                motion_controller.turn_motion()
+                motion_controller.stop_motion()
 
     finally:
         logging.info("Disconnecting BLE from Mekamon")
