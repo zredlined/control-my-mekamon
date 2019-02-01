@@ -34,6 +34,13 @@ class MotionController(object):
         # list of initial MM messages.
         execute_cmds(config.pwn_mekamon_list, self.mekamon_uart, desc="Pwning Mekamon")
 
+    def xyz_mekamon(self, message):
+        if "motion" in message.lower()
+            values = message.split(',') 
+            cmd = "[%d,%d,%d,%d]" % (values[1], values[2], values[3], values[4]) # 6=motion
+            logging.info("Processing raw message from UDP: %s" % (cmd))
+            execute_cmd(cmd, self.mekamon_uart, desc="Processing raw motion")
+
     def stop_mekamon(self):
         cmd = [6, 0, 0, 0] # 6=motion
         execute_cmd(cmd, self.mekamon_uart, desc="Stopping Mekamon")
