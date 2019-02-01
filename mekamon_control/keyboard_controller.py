@@ -16,16 +16,20 @@ import time
 import pygame
 
 import config
-from config import Motion
 
 pygame.init()
-screen = pygame.display.set_mode((720, 480))
+screen = pygame.display.set_mode((config.screen_x, config.screen_y))
 
 class Mekamon(pygame.sprite.Sprite):
 
     def __init__(self):
         super(Mekamon, self).__init__()
-        self.rect = pygame.Rect((0, 0), (32, 32))
+
+        # place initial sprite position
+        offset_x = int(config.screen_x * .5)
+        offset_y = int(config.screen_y * .8)
+        self.rect = pygame.Rect((0+offset_x, 0+offset_y), 
+                                (32+offset_x, 32+offset_y))
         self.image = pygame.Surface((32, 32))
         self.image.fill((255, 255, 255))
         self.velocity = [0, 0]  # It's current velocity.
@@ -95,15 +99,17 @@ def main():
             clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
             logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
             is_mekamon_moving = False
+            # Message delay to avoid flooding Mekamon with requests
+            time.sleep(config.message_delay)
         elif not (strafe == 0 and turn == 0 and fwd == 0):
             # Send data to server
             clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
             logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
             is_mekamon_moving = True
+            # Message delay to avoid flooding Mekamon with requests
+            time.sleep(config.message_delay)
 
-        # Message delay to avoid flooding Mekamon with requests
-        time.sleep(config.message_delay)
 
 if __name__ == '__main__':
     main()
