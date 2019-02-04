@@ -70,18 +70,18 @@ def main():
                 elif event.key == pygame.K_d:
                     mekamon.dx.insert(0, mekamon.speed)
                 elif event.key == pygame.K_w:
-                    mekamon.dy.insert(0, -mekamon.speed)
-                elif event.key == pygame.K_s:
                     mekamon.dy.insert(0, mekamon.speed)
+                elif event.key == pygame.K_s:
+                    mekamon.dy.insert(0, -mekamon.speed)
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_a:
                     mekamon.dx.remove(-mekamon.speed)
                 elif event.key == pygame.K_d:
                     mekamon.dx.remove(mekamon.speed)
                 elif event.key == pygame.K_w:
-                    mekamon.dy.remove(-mekamon.speed)
-                elif event.key == pygame.K_s:
                     mekamon.dy.remove(mekamon.speed)
+                elif event.key == pygame.K_s:
+                    mekamon.dy.remove(-mekamon.speed)
 
         mekamon.update()
         screen.fill((0, 0, 0))
