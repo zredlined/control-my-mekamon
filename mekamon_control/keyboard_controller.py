@@ -96,7 +96,7 @@ def main():
 
         if strafe == 0 and turn == 0 and fwd == 0 and is_mekamon_moving == True:
             clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
+            clientSock.sendto(cmd.encode(), (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
             logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
             is_mekamon_moving = False
             # Message delay to avoid flooding Mekamon with requests
@@ -104,7 +104,7 @@ def main():
         elif not (strafe == 0 and turn == 0 and fwd == 0):
             # Send data to server
             clientSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            clientSock.sendto(cmd, (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
+            clientSock.sendto(cmd.encode(), (config.UDP_IP_ADDRESS, config.UDP_PORT_NO))
             logging.info("strafe:%s fwd:%s turn:%s cmd:%s" % (strafe, fwd, turn, cmd)) 
             is_mekamon_moving = True
             # Message delay to avoid flooding Mekamon with requests
