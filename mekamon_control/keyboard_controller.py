@@ -65,6 +65,7 @@ def main():
             if event.type == pygame.QUIT:
                 raise SystemExit
             elif event.type == pygame.KEYDOWN:
+                # Up/Down/Strafe motions
                 if event.key == pygame.K_a:
                     mekamon.dx.insert(0, -mekamon.speed)
                 elif event.key == pygame.K_d:
@@ -73,7 +74,15 @@ def main():
                     mekamon.dy.insert(0, mekamon.speed)
                 elif event.key == pygame.K_s:
                     mekamon.dy.insert(0, -mekamon.speed)
+ 
+                # Turning motions
+                if event.key == pygame.K_LEFT:
+                    mekamon.turn.insert(0, -mekamon.speed)
+                elif event.key == pygame.K_RIGHT:
+                    mekamon.turn.insert(0, mekamon.speed)
+                 
             elif event.type == pygame.KEYUP:
+                # Up/Down/Strafe motions
                 if event.key == pygame.K_a:
                     mekamon.dx.remove(-mekamon.speed)
                 elif event.key == pygame.K_d:
@@ -82,6 +91,12 @@ def main():
                     mekamon.dy.remove(mekamon.speed)
                 elif event.key == pygame.K_s:
                     mekamon.dy.remove(-mekamon.speed)
+
+                # Turning motions
+                if event.key == pygame.K_LEFT:
+                    mekamon.turn.remove(0, -mekamon.speed)
+                elif event.key == pygame.K_RIGHT:
+                    mekamon.turn.remove(0, mekamon.speed)
 
         mekamon.update()
         screen.fill((0, 0, 0))
