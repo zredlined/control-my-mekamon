@@ -3,6 +3,15 @@
 
 """
 Utilities for Mekamon control API
+
+Credits:
+This application uses Open Source components. You can find the source code of their open source 
+projects along with license information below. We acknowledge and are grateful to these 
+developers for their contributions to open source.
+
+Project: Augmented Reality Mekamon Robot by Wes Freeman 
+https://hackaday.io/project/159212-augmented-mekamon-robot
+
 """
 
 __author__      = "Alex Watson"
@@ -82,6 +91,10 @@ def generate_cmd(int_sequence):
     Args: list of integers
     Returns: string of hexadecimal representation of binary data (str)
     """
+
+    # Credit to https://hackaday.io/Wezzoid for reverse-engineering 
+    # the command protocol. Check out Wes's project at 
+    # https://hackaday.io/project/159212-augmented-mekamon-robot
 
     #logging.debug('int_sequence:', int_sequence)
 
