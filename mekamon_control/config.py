@@ -12,7 +12,9 @@ __copyright__   = "Copyright 2019"
 from collections import namedtuple
 
 # Motion commands
-mekamon_speed = 40 # converted to signed byte, +/- 128 max
+speed_step = 40 # converted to signed byte, +/- 128 max
+height_step = 40 # converted to signed byte [0...127]
+default_height = 80
 
 # BLE settings
 message_delay = 0.2 # Time to sleep after sending message
