@@ -92,10 +92,11 @@ def main():
     # Set up motion controller and initialize Mekamon
     motion_controller = MotionController(mekamon_uart)
     motion_controller.pwn_mekamon()
+    motion_controller.set_height("height,%d" % (config.default_height))
  
     # Setup complete. Start command and control server
     try: 
-        logging.info("Starting UDP server on Port 5000")
+        logging.info("Setup complete. Waiting for network control messages...")
         is_running = True 
 
         while is_running:
@@ -107,6 +108,10 @@ def main():
                 is_running = False
             elif 'motion' in data.lower():
                 motion_controller.xyz_motion(data)
+            elif 'height' in data.lower():
+                motion_controller.set_height(data)
+            elif 'raw' in data.lower():
+                motion_controller.raw_motion(data)
             else:
                 motion_controller.turn_motion()
                 motion_controller.stop_motion()

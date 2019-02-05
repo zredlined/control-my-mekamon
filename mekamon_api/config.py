@@ -17,11 +17,14 @@ init_cmd_2 = [7,1] # 0307010c00
 stop_motion_cmd = [6,0,0,0] # 02060101010c00
 pwn_mekamon_list= np.array([init_cmd_1, init_cmd_2, stop_motion_cmd])
 
+# Mekamon settings
+default_height = 40 # [0...127]
+
 # text messages
 default_cmd_desc = "Executing command"
 
 # BLE settings
-message_delay = 0.5 # Time to sleep after sending message
+message_delay = 0.05 # Time to sleep after sending message
 
 # Server settings
 # Here we define the UDP IP address as well as the port number that we have

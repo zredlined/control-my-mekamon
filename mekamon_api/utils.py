@@ -108,3 +108,23 @@ def generate_cmd(int_sequence):
 
     return cmd
 
+def interpolate_range(a,b,s=5):
+    """ Generate consecutive values list between two numbers with optional step (default=5)."""
+    if (a == b):
+        return [a]
+    else:
+        mx = max(a,b)
+        mn = min(a,b)
+        result = []
+        # inclusive upper limit. If not needed, delete '+1' in the line below
+        while(mn < mx + 1):
+            # if step is positive we go from min to max
+            if s > 0:
+                result.append(mn)
+                mn += s
+            # if step is negative we go from max to min
+            if s < 0:
+                result.append(mx)
+                mx += s
+        return result
+
