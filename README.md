@@ -20,12 +20,12 @@ Install necessary Python packages
 pip install -e requirements.txt
 ```
 
-First, start the server
+First, start the server (may need to run as sudo)
 ```bash
 python -m mekamon_api.mekamon_driver
 ```
 
-Next, start the Pygame client to control your Mekamon with the keyboard ('w','a','s','d' keys for directions)
+Next, start the Pygame client to control your Mekamon with the keyboard ('w','a','s','d' keys for directions). May also need to run as sudo
 ```bash
 python -m mekamon_control.keyboard_controller
 ```
