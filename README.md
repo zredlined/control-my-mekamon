@@ -20,16 +20,14 @@ Install necessary Python packages
 pip install -e requirements.txt
 ```
 
-### First, start the server
-Note: You may need to run this as a root/sudo user for access to the BLE stack.
+First, start the server
 ```bash
-python -m mekamon_api.mekamon_driver
+sudo python -m mekamon_api.mekamon_driver
 ```
 
-### Next, start the Pygame client to control your Mekamon with the keyboard. 
-Note: You may need to run this as a root/sudo user for access to keyboard controls with Pygame.
+Next, start the Pygame client to control your Mekamon with the keyboard. 
 ```bash
-python -m mekamon_control.keyboard_controller
+sudo python -m mekamon_control.keyboard_controller
 ```
 
 ## Supported keyboard commands for API client
