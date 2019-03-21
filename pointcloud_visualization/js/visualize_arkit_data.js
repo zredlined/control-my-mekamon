@@ -188,12 +188,12 @@ function init() {
 
             // Build gradient pointcloud colors based on height in Y dimension
             var delta = max_height - min_height;
-            var vx = ((y-min_height) / delta);
-            var vy = ((y-min_height) / delta);
-            var vz = ((y-min_height) / delta);
+            var red = ((y-min_height) / delta);
+            var green = 1.0-((y-min_height) / delta);
+            var blue = ((y-min_height) / delta);
 
             //colorArray.push(vx, 1.0, vz);
-            colorArray.push(0.0, vy, vz);
+            colorArray.push(0.0, green, blue);
     }
 
     pointGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( pointArray, 3 ) );
