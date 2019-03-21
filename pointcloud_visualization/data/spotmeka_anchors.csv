@@ -1,0 +1,16 @@
+id,type,orientation,pos_x,pos_y,pos_z,rot_w,rot_x,rot_y,rot_z,length,width
+0,anchorPlane,HorizontalPlaneAnchor,-0.9738,-0.7390,-2.2989,3.4268,0.0001,1.0000,-0.0000,0.4000,0.5000
+1,anchorPlane,VerticalPlaneAnchor,-0.8632,0.2201,-1.4708,2.1128,0.5596,0.5889,-0.5831,0.6194,0.4500
+2,anchorPlane,VerticalPlaneAnchor,1.5662,0.5897,0.0737,2.0626,0.5823,-0.5828,0.5668,1.4703,1.7436
+3,anchorPlane,VerticalPlaneAnchor,1.6268,-0.0453,-1.3467,2.5849,0.2873,-0.6755,0.6791,0.9439,0.2447
+4,anchorPlane,HorizontalPlaneAnchor,-0.0650,-0.8531,0.1482,3.4737,-0.0000,1.0000,0.0000,2.2989,2.8802
+5,anchorPlane,HorizontalPlaneAnchor,-0.6419,-0.0454,-0.5772,0.0162,0.0000,1.0004,0.0000,0.8524,1.6100
+6,anchorPlane,VerticalPlaneAnchor,0.4492,-0.5653,0.2816,3.2466,-0.0529,-0.7037,0.7085,0.6699,1.1857
+7,anchorPlane,HorizontalPlaneAnchor,0.7457,-1.1111,-2.8350,0.0731,0.0000,1.0000,0.0000,0.3394,0.5109
+8,anchorPlane,VerticalPlaneAnchor,1.6055,0.3049,-0.8282,2.2509,0.4843,-0.6141,0.6231,0.4209,0.4725
+9,anchorPlane,HorizontalPlaneAnchor,0.0488,-0.6006,0.1731,2.7250,-0.0000,1.0000,0.0000,9.2710,5.5248
+10,anchorPlane,VerticalPlaneAnchor,-0.8035,-0.8060,-2.7482,2.0905,0.5499,0.6061,-0.5747,0.2337,0.5499
+11,anchorPlane,HorizontalPlaneAnchor,1.3774,-0.8671,-3.3412,0.0221,0.0000,-1.0008,0.0000,0.9580,0.5950
+12,anchorPlane,HorizontalPlaneAnchor,-0.6740,-0.8879,-2.8658,0.0153,0.0000,-1.0003,0.0000,1.7423,0.9682
+13,anchorPlane,VerticalPlaneAnchor,-0.0832,0.3003,-0.3172,3.1626,-0.0100,0.7252,-0.6885,0.5124,0.9227
+14,anchorPlane,HorizontalPlaneAnchor,0.4983,0.3616,-3.4469,0.4716,0.0000,-1.0000,0.0000,0.6268,0.8248
