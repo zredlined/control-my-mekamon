@@ -8,6 +8,8 @@ var raycaster;
 
 var moveForward = false;
 var moveBackward = false;
+var moveUp = false;
+var moveDown = false;
 var moveLeft = false;
 var moveRight = false;
 var canJump = false;
@@ -92,6 +94,13 @@ function init() {
         switch ( event.keyCode ) {
 
             case 38: // up
+                moveUp = true;
+                break;
+
+            case 40: // down
+                moveDown = true;
+                break;
+
             case 87: // w
                 moveForward = true;
                 break;
@@ -101,7 +110,6 @@ function init() {
                 moveLeft = true;
                 break;
 
-            case 40: // down
             case 83: // s
                 moveBackward = true;
                 break;
@@ -110,12 +118,6 @@ function init() {
             case 68: // d
                 moveRight = true;
                 break;
-
-            case 32: // space
-                if ( canJump === true ) velocity.y += 350;
-                canJump = false;
-                break;
-
         }
 
     };
@@ -123,8 +125,15 @@ function init() {
     var onKeyUp = function ( event ) {
 
         switch ( event.keyCode ) {
-
             case 38: // up
+                moveUp = false;
+                break;
+
+            case 40: // down
+                moveDown = false;
+                break;
+
+
             case 87: // w
                 moveForward = false;
                 break;
@@ -134,7 +143,6 @@ function init() {
                 moveLeft = false;
                 break;
 
-            case 40: // down
             case 83: // s
                 moveBackward = false;
                 break;
@@ -356,35 +364,20 @@ function animate() {
 
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
-
-        velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+        velocity.y -= velocity.y * 10.0 * delta; 
 
         direction.z = Number( moveForward ) - Number( moveBackward );
         direction.x = Number( moveLeft ) - Number( moveRight );
+        direction.y = Number( moveDown ) - Number( moveUp );
         direction.normalize(); // this ensures consistent movements in all directions
 
         if ( moveForward || moveBackward ) velocity.z -= direction.z * 800.0 * delta;
         if ( moveLeft || moveRight ) velocity.x -= direction.x * 800.0 * delta;
-
-        if ( onObject === true ) {
-
-            velocity.y = Math.max( 0, velocity.y );
-            canJump = true;
-
-        }
+        if ( moveUp || moveDown ) velocity.y -= direction.y * 800.0 * delta;
 
         controls.getObject().translateX( velocity.x * delta );
         controls.getObject().translateY( velocity.y * delta );
         controls.getObject().translateZ( velocity.z * delta );
-
-        if ( controls.getObject().position.y < 10 ) {
-
-            velocity.y = 0;
-            controls.getObject().position.y = 10;
-
-            canJump = true;
-
-        }
 
         prevTime = time;
 
