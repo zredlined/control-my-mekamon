@@ -251,7 +251,7 @@ function init() {
         var length = objects_dataset[i].length * 50;
 
         var geometry = new THREE.BoxGeometry( 10, 10, 10 );
-        var material = new THREE.MeshPhongMaterial({ color: 0x90FFDC, opacity: 0.8, transparent: true });
+        var material = new THREE.MeshPhongMaterial({ color: 0xEE0979, opacity: 0.8, transparent: true });
         var cube = new THREE.Mesh(geometry, material);
 
         scene.add(cube);
