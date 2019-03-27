@@ -20,15 +20,16 @@ var direction = new THREE.Vector3();
 var vertex = new THREE.Vector3();
 var color = new THREE.Color();
 
-var points_dataset = []
-var planes_dataset = []
+var POINT_SPACING = 100;
+var points_dataset = [];
+var planes_dataset = [];
 
 // Load the data
 d3.queue()
-.defer(d3.csv, "./data/spotmeka_points.csv")
-.defer(d3.csv, "./data/spotmeka_anchors.csv")
-.defer(d3.csv, "./data/spotmeka_camera.csv")
-.defer(d3.csv, "./data/spotmeka_objects.csv")
+.defer(d3.csv, "./data/upstairs/spotmeka_points.csv")
+.defer(d3.csv, "./data/upstairs/spotmeka_anchors.csv")
+.defer(d3.csv, "./data/upstairs/spotmeka_camera.csv")
+.defer(d3.csv, "./data/upstairs/spotmeka_objects.csv")
 .await(function(error, points_file, planes_file, camera_file, objects_file) {
     if (error) {
         console.error('Something went wrong: ' + error);
@@ -161,14 +162,44 @@ function init() {
 
     raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
-    // Points
+    // anchor planes
+    for (i = 0; i < planes_dataset.length; i++) {
 
+        var pos_x = planes_dataset[i].pos_x * POINT_SPACING;
+        var pos_y = planes_dataset[i].pos_y * POINT_SPACING;
+        var pos_z = planes_dataset[i].pos_z * POINT_SPACING;
+        var rot_w = planes_dataset[i].rot_w * POINT_SPACING;
+        var rot_x = planes_dataset[i].rot_x * 3.14192;
+        var rot_y = (planes_dataset[i].rot_y / 3.14192) * 3.14192;
+        var rot_z = planes_dataset[i].rot_z * 3.14192;
+        var width = planes_dataset[i].width * POINT_SPACING;
+        var length = planes_dataset[i].length * POINT_SPACING;
+
+        let cube_height = 0.1;
+
+        var anchorGeometry = new THREE.BoxGeometry( width, cube_height, length );
+        var anchorMaterial = new THREE.MeshPhongMaterial({ color: 0x7a7978, opacity: 0.5, transparent: true });
+        var anchorCube = new THREE.Mesh(anchorGeometry, anchorMaterial);
+
+        if (planes_dataset[i].orientation == "VerticalPlaneAnchor") {
+            anchorCube.rotateX( - Math.PI / 2); // use this to make vertical
+        }
+
+        //const quaternion = new THREE.Quaternion(rot_x, rot_y, rot_z, 1);
+        //anchorCube.applyQuaternion(quaternion); // Apply Quaternion
+        //anchorCube.quaternion.normalize();  // Normalize Quaternion
+
+        scene.add(anchorCube);
+        anchorCube.position.set(pos_x, pos_y, pos_z);
+    }
+
+    // Points
     pointGeometry = new THREE.BufferGeometry();
     var min_height = 0;
     var max_height = 0;
 
     for (i = 0; i < points_dataset.length; i++) {
-        var current_height = points_dataset[i]["y"] * 50;
+        var current_height = points_dataset[i]["y"] * POINT_SPACING;
 
         if (current_height < min_height) {
             min_height = current_height;
@@ -181,15 +212,13 @@ function init() {
     console.log("Floor height:" + min_height);
     var pointArray = [];
     var colorArray = [];
-    var n = 1000, n2 = n / 2;
 
-    console.log(min_height, max_height);
     for (i = 0; i < points_dataset.length; i++) {
 
             // Space apart ARKit points appropriately into new environment
-            var x = points_dataset[i]["x"] * 50;
-            var y = points_dataset[i]["y"] * 50;
-            var z = points_dataset[i]["z"] * 50;
+            var x = points_dataset[i]["x"] * POINT_SPACING;
+            var y = points_dataset[i]["y"] * POINT_SPACING;
+            var z = points_dataset[i]["z"] * POINT_SPACING;
             pointArray.push(x,y,z);
 
             var pointColor = new THREE.Color();
@@ -200,7 +229,6 @@ function init() {
             var green = 1.0-((y-min_height) / delta);
             var blue = ((y-min_height) / delta);
 
-            //colorArray.push(vx, 1.0, vz);
             colorArray.push(0.0, green, blue);
     }
 
@@ -212,51 +240,19 @@ function init() {
     points = new THREE.Points( pointGeometry, pointMaterial );
     scene.add( points );
 
+    // bounding box
     var bbox = new THREE.BoxHelper(points, 0x7a7978);
     bbox.update();
     scene.add(bbox);
 
 
-    // anchors
-    for (i = 0; i < planes_dataset.length; i++) {
-
-        var pos_x = planes_dataset[i].pos_x * 50;
-        var pos_y = planes_dataset[i].pos_y * 50;
-        var pos_z = planes_dataset[i].pos_z * 50;
-        var rot_w = planes_dataset[i].rot_w * 50;
-        var rot_x = planes_dataset[i].rot_x * 50;
-        var rot_y = planes_dataset[i].rot_y * 50;
-        var rot_z = planes_dataset[i].rot_z * 50;
-        var width = planes_dataset[i].width * 50;
-        var length = planes_dataset[i].length * 50;
-
-        let cube_height = 0.1;
-
-        var geometry = new THREE.BoxGeometry( width, cube_height, length );
-        var material = new THREE.MeshPhongMaterial({ color: 0x7a7978, opacity: 0.7, transparent: true });
-        var cube = new THREE.Mesh(geometry, material);
-
-        if (planes_dataset[i].orientation == "VerticalPlaneAnchor") {
-            cube.rotateX( - Math.PI / 2); // use this to make vertical
-        }
-
-        //cube.rotateY(rot_x);
-
-        scene.add(cube);
-        cube.position.set(pos_x, pos_y, pos_z);
-        // Set as quaternion vs Euler
-        // https://threejs.org/docs/#api/en/math/Quaternion
-        // cube.quaternion.set(rot_x, rot_y, rot_z, rot_w);
-    }
 
     // objects
     for (i = 0; i < objects_dataset.length; i++) {
 
-        var pos_x = objects_dataset[i].pos_x * 50;
-        var pos_y = objects_dataset[i].pos_y * 50;
-        var pos_z = objects_dataset[i].pos_z * 50;
-        var width = objects_dataset[i].width * 50;
-        var length = objects_dataset[i].length * 50;
+        var pos_x = objects_dataset[i].pos_x * POINT_SPACING;
+        var pos_y = objects_dataset[i].pos_y * POINT_SPACING;
+        var pos_z = objects_dataset[i].pos_z * POINT_SPACING;
 
         var geometry = new THREE.BoxGeometry( 10, 10, 10 );
         var material = new THREE.MeshPhongMaterial({ color: 0xEE0979, opacity: 0.8, transparent: true });
@@ -266,31 +262,32 @@ function init() {
         cube.position.set(pos_x, pos_y, pos_z);
     }
 
-    // camera path
-    var camera_geometry = new THREE.Geometry();
+    // Camera path
+    cameraGeometry = new THREE.BufferGeometry();
+    var cameraPointArray = [];
+
     for (i = 0; i < camera_dataset.length; i++) {
 
-        var pos_x = camera_dataset[i].x * 50;
-        var pos_y = camera_dataset[i].y * 50;
-        var pos_z = camera_dataset[i].z * 50;
+            // Space apart ARKit points appropriately into new environment
+            var x = camera_dataset[i]["x"] * POINT_SPACING;
+            var y = camera_dataset[i]["y"] * POINT_SPACING;
+            var z = camera_dataset[i]["z"] * POINT_SPACING;
+            cameraPointArray.push(x,y,z);
 
-        var xyz_point = new THREE.Vector3(pos_x, pos_y, pos_z);
-        camera_geometry.vertices.push(xyz_point);
     }
-    var camera_line = new MeshLine();
-    camera_line.setGeometry( camera_geometry );
-    var camera_material = new MeshLineMaterial();
 
-    var camera_mesh = new THREE.Mesh( camera_line.geometry, camera_material );
-    scene.add( camera_mesh );
+    cameraGeometry.addAttribute( 'position', new THREE.Float32BufferAttribute( cameraPointArray, 3 ) );
+    cameraGeometry.computeBoundingSphere();
+    var cameraMaterial = new THREE.PointsMaterial( { size: 1, opacity:0.9, transparent:false } );
+    cameraPoints = new THREE.Points( cameraGeometry, cameraMaterial );
+    //scene.add( cameraPoints );
+
 
     // floor
-
     var floorGeometry = new THREE.PlaneBufferGeometry( 2000, 2000, 100, 100 );
     floorGeometry.rotateX( - Math.PI / 2 );
 
     // vertex displacement
-
     var position = floorGeometry.attributes.position;
 
     for ( var i = 0, l = position.count; i < l; i ++ ) {
