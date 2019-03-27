@@ -6,14 +6,25 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
         <!-- three js -->
-        <script src="https://threejs.org/build/three.js"></script>
+        <script src="./external_js/three.js"></script>
+        <script src="./external_js/d3-collection.v1.min.js"></script>
+        <script src="./external_js/d3-dispatch.v1.min.js"></script>
+        <script src="./external_js/d3-dsv.v1.min.js"></script>
+        <script src="./external_js/d3-request.v1.min.js"></script>
+        <script src="./external_js/d3-queue.v3.min.js"></script>
+        <script src="./external_js/THREE.MeshLine.js"></script>
+        <script src="./js/PointerLockControls.js"></script>
 
         <!-- d3 to load the csv -->
+        <!--
+        <script src="https://threejs.org/build/three.js"></script>
         <script src="https://d3js.org/d3-collection.v1.min.js"></script>
         <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
         <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
         <script src="https://d3js.org/d3-request.v1.min.js"></script>
+        <script src="https://d3js.org/d3-queue.v3.min.js"></script>
         <script src="./js/PointerLockControls.js"></script>
+        -->
 
         <style>
             html, body {
@@ -75,11 +86,11 @@
             <div id="instructions">
                 <span style="font-size:40px">Click to Explore</span>
                 <br />
-                (W, A, S, D = Move, SPACE = Jump, MOUSE = Look around)
+                (W, A, S, D = Move, UpArrow, DownArrow = Fly, MOUSE = Look around)
             </div>
         </div>
 
-        <script src="./js/visualize_arkit_pointcloud.js"></script>
+        <script src="./js/visualize_arkit_data.js"></script>
     </body>
 
 </html>
